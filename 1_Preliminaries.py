@@ -39,9 +39,9 @@
 
 
 import sys
-sys.path.append('/opt/cocoapi/PythonAPI')
+sys.path.append('./cocoapi/PythonAPI')
 from pycocotools.coco import COCO
-get_ipython().system('pip install nltk')
+#get_ipython().system('pip install nltk')
 import nltk
 nltk.download('punkt')
 from data_loader import get_loader
@@ -234,21 +234,21 @@ print('Total number of tokens in vocabulary:', len(data_loader.dataset.vocab))
 
 
 # Modify the minimum word count threshold.
-vocab_threshold = 4
-
-# Obtain the data loader.
-data_loader = get_loader(transform=transform_train,
-                         mode='train',
-                         batch_size=batch_size,
-                         vocab_threshold=vocab_threshold,
-                         vocab_from_file=False)
+#vocab_threshold = 4
+#
+## Obtain the data loader.
+#data_loader = get_loader(transform=transform_train,
+#                         mode='train',
+#                         batch_size=batch_size,
+#                         vocab_threshold=vocab_threshold,
+#                         vocab_from_file=False)
 
 
 # In[ ]:
 
 
 # Print the total number of keys in the word2idx dictionary.
-print('Total number of tokens in vocabulary:', len(data_loader.dataset.vocab))
+#print('Total number of tokens in vocabulary:', len(data_loader.dataset.vocab))
 
 
 # There are also a few special keys in the `word2idx` dictionary.  You are already familiar with the special start word (`"<start>"`) and special end word (`"<end>"`).  There is one more special token, corresponding to unknown words (`"<unk>"`).  All tokens that don't appear anywhere in the `word2idx` dictionary are considered unknown words.  In the pre-processing step, any unknown tokens are mapped to the integer `2`.
@@ -358,8 +358,8 @@ print('captions.shape:', captions.shape)
 
 
 # Watch for any changes in model.py, and re-load it automatically.
-get_ipython().run_line_magic('load_ext', 'autoreload')
-get_ipython().run_line_magic('autoreload', '2')
+#get_ipython().run_line_magic('load_ext', 'autoreload')
+#get_ipython().run_line_magic('autoreload', '2')
 
 # Import EncoderCNN and DecoderRNN. 
 from model import EncoderCNN, DecoderRNN
