@@ -93,7 +93,7 @@ import torch
 import torch.nn as nn
 from torchvision import transforms
 import sys
-sys.path.append('/opt/cocoapi/PythonAPI')
+sys.path.append('./cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from data_loader import get_loader
 from model import EncoderCNN, DecoderRNN
@@ -101,11 +101,11 @@ import math
 
 
 ## TODO #1: Select appropriate values for the Python variables below.
-batch_size = ...          # batch size
-vocab_threshold = ...        # minimum word count threshold
-vocab_from_file = ...    # if True, load existing vocab file
-embed_size = ...           # dimensionality of image and word embeddings
-hidden_size = ...          # number of features in hidden state of the RNN decoder
+batch_size = 64          # batch size
+vocab_threshold = 5        # minimum word count threshold
+vocab_from_file = True    # if True, load existing vocab file
+embed_size = 256           # dimensionality of image and word embeddings
+hidden_size = 512          # number of features in hidden state of the RNN decoder
 num_epochs = 3             # number of training epochs
 save_every = 1             # determines frequency of saving model weights
 print_every = 100          # determines window for printing average loss
@@ -143,10 +143,16 @@ decoder.to(device)
 criterion = nn.CrossEntropyLoss().cuda() if torch.cuda.is_available() else nn.CrossEntropyLoss()
 
 # TODO #3: Specify the learnable parameters of the model.
-params = ...
+for parameter in encoder.parameters():
+    parameter.requires_grad = True
+for parameter in encoder.resnet.parameters():
+    parameter.requires_grad = False
+for parameter in decoder.parameters():
+    parameter.requires_grad = True
+params = list(decoder.parameters()) + list(encoder.embed.parameters()) + list(encoder.bn1.parameters())
 
 # TODO #4: Define the optimizer.
-optimizer = ...
+optimizer = torch.optim.Adam(params)
 
 # Set the total number of training steps per epoch.
 total_step = math.ceil(len(data_loader.dataset.caption_lengths) / data_loader.batch_sampler.batch_size)
@@ -185,26 +191,13 @@ total_step = math.ceil(len(data_loader.dataset.caption_lengths) / data_loader.ba
 import torch.utils.data as data
 import numpy as np
 import os
-import requests
-import time
 
 # Open the training log file.
 f = open(log_file, 'w')
 
-old_time = time.time()
-response = requests.request("GET", 
-                            "http://metadata.google.internal/computeMetadata/v1/instance/attributes/keep_alive_token", 
-                            headers={"Metadata-Flavor":"Google"})
-
 for epoch in range(1, num_epochs+1):
     
     for i_step in range(1, total_step+1):
-        
-        if time.time() - old_time > 60:
-            old_time = time.time()
-            requests.request("POST", 
-                             "https://nebula.udacity.com/api/v1/remote/keep-alive", 
-                             headers={'Authorization': "STAR " + response.text})
         
         # Randomly sample a caption length, and sample indices with that length.
         indices = data_loader.dataset.get_train_indices()

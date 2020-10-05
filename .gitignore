@@ -6,3 +6,5 @@ annotations/
 .DS_Store
 .vscode/
 cocoapi/
+*.pkl
+training_log.txt

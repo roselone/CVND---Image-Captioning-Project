@@ -29,13 +29,18 @@
 
 
 import sys
-sys.path.append('/opt/cocoapi/PythonAPI')
+sys.path.append('./cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from data_loader import get_loader
 from torchvision import transforms
 
 # TODO #1: Define a transform to pre-process the testing images.
-transform_test = ...
+transform_test = transforms.Compose([
+    transforms.Resize((256,256)),
+    transforms.CenterCrop((224,224)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.485, 0.456, 0.406),      # normalize image for pre-trained model
+                         (0.229, 0.224, 0.225))])
 
 #-#-#-# Do NOT modify the code below this line. #-#-#-#
 
@@ -51,7 +56,6 @@ data_loader = get_loader(transform=transform_test,
 
 import numpy as np
 import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
 
 # Obtain sample image before and after pre-processing.
 orig_image, image = next(iter(data_loader))
@@ -89,20 +93,18 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 # Watch for any changes in model.py, and re-load it automatically.
-get_ipython().run_line_magic('load_ext', 'autoreload')
-get_ipython().run_line_magic('autoreload', '2')
 
 import os
 import torch
 from model import EncoderCNN, DecoderRNN
 
 # TODO #2: Specify the saved models to load.
-encoder_file = ... 
-decoder_file = ...
+encoder_file = "encoder-3.pkl" 
+decoder_file = "decoder-3.pkl"
 
 # TODO #3: Select appropriate values for the Python variables below.
-embed_size = ...
-hidden_size = ...
+embed_size = 256
+hidden_size = 512
 
 # The size of the vocabulary.
 vocab_size = len(data_loader.dataset.vocab)
@@ -159,7 +161,19 @@ assert all([x in data_loader.dataset.vocab.idx2word for x in output]), "Each ent
 
 # TODO #4: Complete the function.
 def clean_sentence(output):
-    return sentence
+    sentence = ''
+    for i,out_int in enumerate(output):
+        word = data_loader.dataset.vocab.idx2word[out_int]
+        if word == '<end>':
+            break
+        elif word!='<start>' and word!='.':
+            if i != 0:
+                word = " " + word
+                sentence = sentence + word
+            else:
+                word = word[0].upper() + word[1:]
+                sentence = sentence + word
+    return str(sentence)
 
 
 # After completing the `clean_sentence` function above, run the code cell below.  If the cell returns an assertion error, then please follow the instructions to modify your code before proceeding.

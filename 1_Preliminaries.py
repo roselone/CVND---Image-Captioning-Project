@@ -63,11 +63,11 @@ vocab_threshold = 5
 batch_size = 10
 
 # Obtain the data loader.
-data_loader = get_loader(transform=transform_train,
-                         mode='train',
-                         batch_size=batch_size,
-                         vocab_threshold=vocab_threshold,
-                         vocab_from_file=False)
+# data_loader = get_loader(transform=transform_train,
+#                          mode='train',
+#                          batch_size=batch_size,
+#                          vocab_threshold=vocab_threshold,
+#                          vocab_from_file=False)
 
 
 # When you ran the code cell above, the data loader was stored in the variable `data_loader`.  
@@ -122,7 +122,7 @@ data_loader = get_loader(transform=transform_train,
 # In[ ]:
 
 
-sample_caption = 'A person doing a trick on a rail while riding a skateboard.'
+# sample_caption = 'A person doing a trick on a rail while riding a skateboard.'
 
 
 # In **`line 1`** of the code snippet, every letter in the caption is converted to lowercase, and the [`nltk.tokenize.word_tokenize`](http://www.nltk.org/) function is used to obtain a list of string-valued tokens.  Run the next code cell to visualize the effect on `sample_caption`.
@@ -130,10 +130,10 @@ sample_caption = 'A person doing a trick on a rail while riding a skateboard.'
 # In[ ]:
 
 
-import nltk
+# import nltk
 
-sample_tokens = nltk.tokenize.word_tokenize(str(sample_caption).lower())
-print(sample_tokens)
+# sample_tokens = nltk.tokenize.word_tokenize(str(sample_caption).lower())
+# print(sample_tokens)
 
 
 # In **`line 2`** and **`line 3`** we initialize an empty list and append an integer to mark the start of a caption.  The [paper](https://arxiv.org/pdf/1411.4555.pdf) that you are encouraged to implement uses a special start word (and a special end word, which we'll examine below) to mark the beginning (and end) of a caption.
@@ -145,12 +145,12 @@ print(sample_tokens)
 # In[ ]:
 
 
-sample_caption = []
+# sample_caption = []
 
-start_word = data_loader.dataset.vocab.start_word
-print('Special start word:', start_word)
-sample_caption.append(data_loader.dataset.vocab(start_word))
-print(sample_caption)
+# start_word = data_loader.dataset.vocab.start_word
+# print('Special start word:', start_word)
+# sample_caption.append(data_loader.dataset.vocab(start_word))
+# print(sample_caption)
 
 
 # In **`line 4`**, we continue the list by adding integers that correspond to each of the tokens in the caption.
@@ -158,8 +158,8 @@ print(sample_caption)
 # In[ ]:
 
 
-sample_caption.extend([data_loader.dataset.vocab(token) for token in sample_tokens])
-print(sample_caption)
+# sample_caption.extend([data_loader.dataset.vocab(token) for token in sample_tokens])
+# print(sample_caption)
 
 
 # In **`line 5`**, we append a final integer to mark the end of the caption.  
@@ -171,11 +171,11 @@ print(sample_caption)
 # In[ ]:
 
 
-end_word = data_loader.dataset.vocab.end_word
-print('Special end word:', end_word)
+# end_word = data_loader.dataset.vocab.end_word
+# print('Special end word:', end_word)
 
-sample_caption.append(data_loader.dataset.vocab(end_word))
-print(sample_caption)
+# sample_caption.append(data_loader.dataset.vocab(end_word))
+# print(sample_caption)
 
 
 # Finally, in **`line 6`**, we convert the list of integers to a PyTorch tensor and cast it to [long type](http://pytorch.org/docs/master/tensors.html#torch.Tensor.long).  You can read more about the different types of PyTorch tensors on the [website](http://pytorch.org/docs/master/tensors.html).
@@ -185,8 +185,8 @@ print(sample_caption)
 
 import torch
 
-sample_caption = torch.Tensor(sample_caption).long()
-print(sample_caption)
+# sample_caption = torch.Tensor(sample_caption).long()
+# print(sample_caption)
 
 
 # And that's it!  In summary, any caption is converted to a list of tokens, with _special_ start and end tokens marking the beginning and end of the sentence:
@@ -216,7 +216,7 @@ print(sample_caption)
 
 
 # Preview the word2idx dictionary.
-dict(list(data_loader.dataset.vocab.word2idx.items())[:10])
+# dict(list(data_loader.dataset.vocab.word2idx.items())[:10])
 
 
 # We also print the total number of keys.
@@ -225,7 +225,7 @@ dict(list(data_loader.dataset.vocab.word2idx.items())[:10])
 
 
 # Print the total number of keys in the word2idx dictionary.
-print('Total number of tokens in vocabulary:', len(data_loader.dataset.vocab))
+# print('Total number of tokens in vocabulary:', len(data_loader.dataset.vocab))
 
 
 # As you will see if you examine the code in **vocabulary.py**, the `word2idx` dictionary is created by looping over the captions in the training dataset.  If a token appears no less than `vocab_threshold` times in the training set, then it is added as a key to the dictionary and assigned a corresponding unique integer.  You will have the option later to amend the `vocab_threshold` argument when instantiating your data loader.  Note that in general, **smaller** values for `vocab_threshold` yield a **larger** number of tokens in the vocabulary.  You are encouraged to check this for yourself in the next code cell by decreasing the value of `vocab_threshold` before creating a new data loader.  
@@ -256,10 +256,10 @@ print('Total number of tokens in vocabulary:', len(data_loader.dataset.vocab))
 # In[ ]:
 
 
-unk_word = data_loader.dataset.vocab.unk_word
-print('Special unknown word:', unk_word)
+# unk_word = data_loader.dataset.vocab.unk_word
+# print('Special unknown word:', unk_word)
 
-print('All unknown words are mapped to this integer:', data_loader.dataset.vocab(unk_word))
+# print('All unknown words are mapped to this integer:', data_loader.dataset.vocab(unk_word))
 
 
 # Check this for yourself below, by pre-processing the provided nonsense words that never appear in the training captions. 
@@ -267,8 +267,8 @@ print('All unknown words are mapped to this integer:', data_loader.dataset.vocab
 # In[ ]:
 
 
-print(data_loader.dataset.vocab('jfkafejw'))
-print(data_loader.dataset.vocab('ieowoqjf'))
+# print(data_loader.dataset.vocab('jfkafejw'))
+# print(data_loader.dataset.vocab('ieowoqjf'))
 
 
 # The final thing to mention is the `vocab_from_file` argument that is supplied when creating a data loader.  To understand this argument, note that when you create a new data loader, the vocabulary (`data_loader.dataset.vocab`) is saved as a [pickle](https://docs.python.org/3/library/pickle.html) file in the project folder, with filename `vocab.pkl`.
@@ -301,13 +301,13 @@ data_loader = get_loader(transform=transform_train,
 # In[ ]:
 
 
-from collections import Counter
+# from collections import Counter
 
-# Tally the total number of training captions with each length.
-counter = Counter(data_loader.dataset.caption_lengths)
-lengths = sorted(counter.items(), key=lambda pair: pair[1], reverse=True)
-for value, count in lengths:
-    print('value: %2d --- count: %5d' % (value, count))
+# # Tally the total number of training captions with each length.
+# counter = Counter(data_loader.dataset.caption_lengths)
+# lengths = sorted(counter.items(), key=lambda pair: pair[1], reverse=True)
+# for value, count in lengths:
+#     print('value: %2d --- count: %5d' % (value, count))
 
 
 # To generate batches of training data, we begin by first sampling a caption length (where the probability that any length is drawn is proportional to the number of captions with that length in the dataset).  Then, we retrieve a batch of size `batch_size` of image-caption pairs, where all captions have the sampled length.  This approach for assembling batches matches the procedure in [this paper](https://arxiv.org/pdf/1502.03044.pdf) and has been shown to be computationally efficient without degrading performance.
